@@ -9,7 +9,6 @@ class App extends React.Component {
       cityData: {},
       searchQuery: '',
       showMap: false,
-
     }
   }
   getlocation = async (e) => {
@@ -19,13 +18,13 @@ class App extends React.Component {
 
       searchQuery: e.target.city.value,
     })
-
+console.log(this.state.searchQuery)
     let url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.searchQuery}&format=json`;
 
     let responseData = await axios.get(url);
-    // console.log(responseData)
-    // console.log(responseData.data)
-    // console.log(responseData.data[0])
+    console.log(responseData)
+    console.log(responseData.data)
+    console.log(responseData.data[0])
 
      this.setState({
 
@@ -43,7 +42,7 @@ class App extends React.Component {
           City Explorer
         </h1>
 
-        <form onSubmit={this.getLocation}>
+        <form onSubmit = {this.getlocation} >
           <input type='text' placeholder='city name' name='city' />
           <input type='submit' value='get City data' />
         </form>
