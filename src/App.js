@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,6 +10,8 @@ class App extends React.Component {
       cityData: {},
       searchQuery: '',
       showMap: false,
+      WeatherInfo: [],
+
     }
   }
   getlocation = async (e) => {
@@ -16,7 +19,7 @@ class App extends React.Component {
 
     await this.setState({
 
-      searchQuery: e.target.city.value,
+      searchQuery: e.target.city.value.toLowerCase(),
     })
 console.log(this.state.searchQuery)
     let url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.searchQuery}&format=json`;
@@ -31,9 +34,21 @@ console.log(this.state.searchQuery)
       cityData: responseData.data[0],
       showMap: true,
     })
+    this.getWeather();
 
   }
 
+
+  getWeather = async () => {
+    let city = this.state.cityName.charAt(0).toUpperCase() + this.state.cityName.slice(1);
+    // let pokemonData = await axios.get(`${process.env.REACT_APP_SERVER}/getPokeInfo?pokeName=charmander`);
+
+   let cityData = await axios.get(`${process.env.REACT_APP_SERVER}/weather?cityName=${city}&format=json`)
+   console.log(cityData.data);
+    await this.setState({
+      WeatherInfo: cityData.data,
+    })
+  }
   render() {
     return (
 
@@ -51,7 +66,8 @@ console.log(this.state.searchQuery)
         <p>Latitude :{this.state.cityData.lat}</p>
         <p>Longitude :{this.state.cityData.lon}</p>
         {this.state.showMap && <img alt='map' src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`} />
- }
+  }
+        <p> weather {this.state.WeatherInfo}  {this.getWeather} </p>
 
       </>
     )
