@@ -19,9 +19,9 @@ class App extends React.Component {
 
     await this.setState({
 
-      searchQuery: e.target.city.value.toLowerCase(),
+      searchQuery: e.target.city.value,
     })
-console.log(this.state.searchQuery)
+    console.log(this.state.searchQuery)
     let url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.searchQuery}&format=json`;
 
     let responseData = await axios.get(url);
@@ -29,7 +29,7 @@ console.log(this.state.searchQuery)
     console.log(responseData.data)
     console.log(responseData.data[0])
 
-     this.setState({
+    this.setState({
 
       cityData: responseData.data[0],
       showMap: true,
@@ -40,11 +40,12 @@ console.log(this.state.searchQuery)
 
 
   getWeather = async () => {
-    let city = this.state.cityName.charAt(0).toUpperCase() + this.state.cityName.slice(1);
+    let city = this.state.searchQuery
+    // .charAt(0).toUpperCase() + this.state.cityName.slice(1);
     // let pokemonData = await axios.get(`${process.env.REACT_APP_SERVER}/getPokeInfo?pokeName=charmander`);
-
-   let cityData = await axios.get(`${process.env.REACT_APP_SERVER}/weather?cityName=${city}&format=json`)
-   console.log(cityData.data);
+    //https://city-explore-sereen.herokuapp.com/weather?cityName=Paris
+    let cityData = await axios.get(`https://city-explore-sereen.herokuapp.com/weather?cityName=${city}`)
+    console.log(cityData.data);
     await this.setState({
       WeatherInfo: cityData.data,
     })
@@ -57,7 +58,7 @@ console.log(this.state.searchQuery)
           City Explorer
         </h1>
 
-        <form onSubmit = {this.getlocation} >
+        <form onSubmit={this.getlocation} >
           <input type='text' placeholder='city name' name='city' />
           <input type='submit' value='get City data' />
         </form>
@@ -66,8 +67,19 @@ console.log(this.state.searchQuery)
         <p>Latitude :{this.state.cityData.lat}</p>
         <p>Longitude :{this.state.cityData.lon}</p>
         {this.state.showMap && <img alt='map' src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`} />
-  }
-        <p> weather {this.state.WeatherInfo}  {this.getWeather} </p>
+        }
+        {this.state.WeatherInfo.map((ele, index) => {
+         return(        console.log(ele),
+         <div key={index}>
+           <h3>Weather</h3>
+           <p>  {ele.valid_date}
+                   </p>
+                   <p> {ele.description}</p>
+
+        </div>
+         )
+        }
+        )}
 
       </>
     )
