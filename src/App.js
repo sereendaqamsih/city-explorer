@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Weather from './components/Weather';
+import Movies from './components/Movies';
 
 class App extends React.Component {
   constructor(props) {
@@ -10,8 +12,8 @@ class App extends React.Component {
       cityData: {},
       searchQuery: '',
       showMap: false,
-      WeatherInfo: [],
-      MoviesInfo: [],
+      weatherInfo: [],
+      moviesInfo: [],
 
     }
   }
@@ -51,7 +53,7 @@ class App extends React.Component {
     let moviesUrl = `https://city-explore-sereen.herokuapp.com/movies?cityName=${city}`;
     // let moviesUrl = `https://localhost:3030/movies?cityName=${city}&format=json`;
     let moviesData = await axios.get(moviesUrl);
-    await this.setState({MoviesInfo: moviesData.data, })
+    await this.setState({moviesInfo: moviesData.data, })
   }
   getWeather = async () => {
     let city = this.state.searchQuery
@@ -59,9 +61,9 @@ class App extends React.Component {
     // let pokemonData = await axios.get(`${process.env.REACT_APP_SERVER}/getPokeInfo?pokeName=charmander`);
     //https://city-explore-sereen.herokuapp.com/weather?cityName=Paris
     let cityData = await axios.get(`https://city-explore-sereen.herokuapp.com/weather?cityName=${city}`)
-    await this.setState({ WeatherInfo: cityData.data,})
+    await this.setState({ weatherInfo: cityData.data,})
   }
-  
+
   render() {
     return (
 
@@ -80,18 +82,8 @@ class App extends React.Component {
         <p>Longitude :{this.state.cityData.lon}</p>
         {this.state.showMap && <img alt='map' src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=15`} />
         }
-        {this.state.WeatherInfo.map((ele, index) => {
-         return(        console.log(ele),
-         <div key={index}>
-           <h3>Weather</h3>
-           <p>  {ele.valid_date}
-                   </p>
-                   <p> {ele.description}</p>
-        </div>
-        
-         )
-        }
-        )}
+       <Weather weatherInfo={this.state.weatherInfo}></Weather>
+       <Movies moviesInfo={this.state.moviesInfo}/>
 {/* {this.state.MoviesInfo.map((ele, index) => {
          return(        
          <div key={index}>
@@ -104,7 +96,6 @@ class App extends React.Component {
          )
         }
         )} */}
-<p> movies {this.state.MoviesInfo}</p>
 
       </>
     )
