@@ -11,6 +11,7 @@ class App extends React.Component {
       searchQuery: '',
       showMap: false,
       WeatherInfo: [],
+      MoviesInfo: [],
 
     }
   }
@@ -21,35 +22,46 @@ class App extends React.Component {
 
       searchQuery: e.target.city.value,
     })
-    console.log(this.state.searchQuery)
+    // console.log(this.state.searchQuery)
     let url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.searchQuery}&format=json`;
 
     let responseData = await axios.get(url);
-    console.log(responseData)
-    console.log(responseData.data)
-    console.log(responseData.data[0])
-
-    this.setState({
+   
+    await this.setState({
 
       cityData: responseData.data[0],
       showMap: true,
     })
     this.getWeather();
+     this.reWeather();
+     this.reMovies();
 
   }
+  reWeather = async () => {
+    
+    let city = this.state.searchQuery;
+    let weatherUrl = `https://city-explore-sereen.herokuapp.com/weather?cityName=${city}`;
+    // let weatherUrl = `https://localhost:3030/weather?cityName=${city}&format=json`;
+    let weatherData = await axios.get(weatherUrl)
+    await this.setState ({WeatherInfo: weatherData.data,});
+  }
 
-
+  reMovies= async () => {
+    let city = this.state.searchQuery;
+    let moviesUrl = `https://city-explore-sereen.herokuapp.com/movies?cityName=${city}`;
+    // let moviesUrl = `https://localhost:3030/movies?cityName=${city}&format=json`;
+    let moviesData = await axios.get(moviesUrl);
+    await this.setState({MoviesInfo: moviesData.data, })
+  }
   getWeather = async () => {
     let city = this.state.searchQuery
     // .charAt(0).toUpperCase() + this.state.cityName.slice(1);
     // let pokemonData = await axios.get(`${process.env.REACT_APP_SERVER}/getPokeInfo?pokeName=charmander`);
     //https://city-explore-sereen.herokuapp.com/weather?cityName=Paris
     let cityData = await axios.get(`https://city-explore-sereen.herokuapp.com/weather?cityName=${city}`)
-    console.log(cityData.data);
-    await this.setState({
-      WeatherInfo: cityData.data,
-    })
+    await this.setState({ WeatherInfo: cityData.data,})
   }
+  
   render() {
     return (
 
@@ -75,11 +87,24 @@ class App extends React.Component {
            <p>  {ele.valid_date}
                    </p>
                    <p> {ele.description}</p>
-
         </div>
+        
          )
         }
         )}
+{/* {this.state.MoviesInfo.map((ele, index) => {
+         return(        
+         <div key={index}>
+           <h4>Movies</h4>
+           <p>  {ele.original_title}</p>
+                   <p> {ele.overview}</p>
+{ <p>{this.reMovies}</p>}
+        </div>
+        
+         )
+        }
+        )} */}
+<p> movies {this.state.MoviesInfo}</p>
 
       </>
     )
