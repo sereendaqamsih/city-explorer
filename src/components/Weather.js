@@ -5,7 +5,7 @@ class Weather extends React.Component{
     render(){
         return(
             <div>
-            {this.props.weatherInfo.map((ele, index) => {
+            {this.props.weatherdayinfo.map((ele, index) => {
                 return(        
                                     <div key={index}>
                   <h3>Weather</h3>

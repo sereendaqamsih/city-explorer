@@ -10,7 +10,7 @@ class Movies extends React.Component{
         return(
             <div>
 
-<p> movies {this.props.moviesInfo.map((ele,index)=>
+<p> movies {this.props.Moviesdayinfo.map((ele,index)=>
 {
     return(
         <div>
